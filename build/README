@@ -1,0 +1,6 @@
+Output of build goes in this directory.
+See the main README file for build instructions.
+
+On build success, you will find the following files here:
+CosmosWebCore.js
+CosmosWebCore.wasm
