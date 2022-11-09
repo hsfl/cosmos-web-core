@@ -14,7 +14,7 @@ target_link_libraries(cosmos_web_core_bindings
     CosmosMath
 
     # Emscripten compiler options
-    "-o ${PROJECT_SOURCE_DIR}/build/CosmosWebCore.js"
+    "-o ${PROJECT_SOURCE_DIR}/build/dist/CosmosWebCore.js"
     "--bind"
     "-s WASM=1"
     "-s MODULARIZE=1"

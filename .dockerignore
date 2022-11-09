@@ -1,0 +1,3 @@
+# Directories and files to ignore on COPY
+build
+scripts/build_docker_image

@@ -1,14 +1,15 @@
 This project creates emcc bindings for COSMOS's C++ library COSMOS Core for use in Javascript.
 Primarily to be used by cosmos web backend, which is NodeJS.
 
-To build, run the script do_cmake_emcc in the scripts/ folder. 
+To build the docker image, run the script build_docker_image in the scripts/folder.
+> cd scripts
+> ./build_docker_image
+
+
+To manually build the project, run the script do_cmake_emcc in the scripts/ folder. 
 > cd scripts
 > ./do_cmake_emcc
 
 The output files of interest are:
-build/CosmosWebCore.js
-build/CosmosWebCore.wasm
-
-To build the docker image, run the script build_docker_image in the scripts/folder.
-> cd scripts
-> ./build_docker_image
+build/dist/CosmosWebCore.js
+build/dist/CosmosWebCore.wasm
