@@ -8,3 +8,7 @@ To build, run the script do_cmake_emcc in the scripts/ folder.
 The output files of interest are:
 build/CosmosWebCore.js
 build/CosmosWebCore.wasm
+
+To build the docker image, run the script build_docker_image in the scripts/folder.
+> cd scripts
+> ./build_docker_image
