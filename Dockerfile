@@ -23,7 +23,7 @@ WORKDIR /root/cosmos/source/projects/cosmos-web-core/
 COPY . .
 
 # Use base cosmos image libraries
-COPY --from=cosmos/core /root/cosmos/source/core/libraries /root/cosmos/source/core/libraries
+COPY --from=hsfl2/core /root/cosmos/source/core/libraries /root/cosmos/source/core/libraries
 WORKDIR /root/cosmos/source/projects/cosmos-web-core/scripts
 
 # Make the "latest" SDK "active" for the current user. (writes .emscripten file)

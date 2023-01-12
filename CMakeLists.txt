@@ -47,3 +47,6 @@ target_link_libraries(${PROJECT_NAME}
     # Link to our library
     cosmos_web_core_bindings
 )
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dist/CosmosWebCore.js DESTINATION /build/dist)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dist/CosmosWebCore.wasm DESTINATION /build/dist)

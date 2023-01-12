@@ -1,1 +1,1 @@
-docker build -t cosmos/web_core:latest ..
+docker build -t hsfl2/web_core:latest ..
