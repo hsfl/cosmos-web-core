@@ -14,6 +14,6 @@ EMSCRIPTEN_BINDINGS(my_module) {
         .field("w", &quaternion::w);
     value_object<cvector>("cvector")
         .field("x", &cvector::x)
-        .field("x", &cvector::y)
-        .field("y", &cvector::z);
+        .field("y", &cvector::y)
+        .field("z", &cvector::z);
 }
