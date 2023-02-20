@@ -12,6 +12,7 @@ target_link_libraries(cosmos_web_core_bindings
     # Link to our library
     CosmosSupport
     CosmosMath
+    CosmosConvert
 
     # Emscripten compiler options
     "-o ${PROJECT_SOURCE_DIR}/build/dist/CosmosWebCore.js"

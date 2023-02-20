@@ -28,6 +28,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 message("Setting Standard to c++11")
 add_compile_definitions(USE_LINUX_LIBRARIES)
 include_directories(${COSMOS_SOURCE}/core/libraries/)
+add_subdirectory(${COSMOS_SOURCE}/core/libraries/thirdparty/zlib   ${CMAKE_BINARY_DIR}/libraries/thirdparty/zlib/)
 add_subdirectory(${COSMOS_SOURCE}/core/libraries/support   ${CMAKE_BINARY_DIR}/libraries/support/)
 add_subdirectory(${COSMOS_SOURCE}/core/libraries/math      ${CMAKE_BINARY_DIR}/libraries/math/)
 
