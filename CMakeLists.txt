@@ -51,3 +51,4 @@ target_link_libraries(${PROJECT_NAME}
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dist/CosmosWebCore.js DESTINATION /build/dist)
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dist/CosmosWebCore.wasm DESTINATION /build/dist)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/dist/CosmosWebCore.data DESTINATION /build/dist)
