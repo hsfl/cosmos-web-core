@@ -12,6 +12,7 @@ target_link_libraries(cosmos_web_core_bindings
     # Link to our library
     CosmosSupport
     CosmosMath
+    CosmosConvert
 
     # Emscripten compiler options
     "-o ${PROJECT_SOURCE_DIR}/build/dist/CosmosWebCore.js"
@@ -21,4 +22,6 @@ target_link_libraries(cosmos_web_core_bindings
     "-s EXPORT_NAME=COSMOSJS"
     "-s DISABLE_EXCEPTION_CATCHING=0"
     "-s ALLOW_MEMORY_GROWTH=1"
+    # "-o ${PROJECT_SOURCE_DIR}/build/dist/CosmosWebCore.data"
+    "--preload-file /root/cosmos/resources@/home/web_user/cosmos/resources"
 )
