@@ -1,6 +1,6 @@
 FROM ubuntu:20.04
 
-SHELL ["/bin/bash", "-c"]
+SHELL ["/bin/bash",  "--login", "-c"]
 
 WORKDIR /root
 # Install apt packages
@@ -23,7 +23,8 @@ WORKDIR /root/cosmos/source/projects/cosmos-web-core/
 COPY . .
 
 # Use base cosmos image libraries
-COPY --from=hsfl2/core /root/cosmos/source/core/libraries /root/cosmos/source/core/libraries
+RUN git clone https://github.com/hsfl/cosmos-core.git /root/cosmos/source/core 
+# COPY --from=hsfl2/core /root/cosmos/source/core/libraries /root/cosmos/source/core/libraries
 WORKDIR /root/cosmos/source/projects/cosmos-web-core/scripts
 
 # Make the "latest" SDK "active" for the current user. (writes .emscripten file)
@@ -33,5 +34,6 @@ RUN /root/emsdk/emsdk activate latest; \
     # Build emscripten project
     ./do_cmake_emcc
 
-# Leave user in project directory
-WORKDIR /root/cosmos/source/projects/cosmos-web-core/
+# # Leave user in project directory
+# WORKDIR /root/cosmos/source/projects/cosmos-web-core/
+
