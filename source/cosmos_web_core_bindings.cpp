@@ -6,9 +6,11 @@
 #include <emscripten/bind.h>
 #include <array>
 #include <string>
+#include "physics/physicslib.h"
 
 using namespace emscripten;
 using namespace Cosmos::Convert;
+using namespace Cosmos::Physics;
 
 // locstruc loc // cartpos eci, qatt icrf
 // return LVLH attstruc qatt ~ TODO this needs to be for att_icrf ~ att_icrf2lvlh
@@ -101,6 +103,7 @@ EMSCRIPTEN_BINDINGS(my_module)
     function("loc2geos", &loc2geos);
     function("eci2geod", &eci2geod);
     function("ecitogeod", &ecitogeod);
+    function("groundstation", &groundstation);
     value_object<locstruc>("locstruc")
         .field("utc", &locstruc::utc)
         .field("pos", &locstruc::pos)
