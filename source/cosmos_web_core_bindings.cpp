@@ -1,6 +1,8 @@
 #include "support/convertlib.h"
+#include "support/convertdef.h"
 #include "support/datalib.h"
 #include "support/jsondef.h"
+#include "support/ephemlib.h"
 #include "math/vector.h"
 #include "math/matrix.h"
 #include <emscripten/bind.h>
@@ -22,6 +24,40 @@ qatt loc2lvlh(locstruc loc)
         loc.att.lvlh.utc = iretn;
     }
     return loc.att.lvlh;
+}
+
+qatt loc2geoc(locstruc loc)
+{
+    int32_t iretn = pos_eci(loc);
+    if (iretn < 0)
+    {
+        loc.att.geoc.utc = iretn;
+    }
+    return loc.att.geoc;
+}
+
+rvector loc2sunv(locstruc loc)
+{
+    double tt = utc2tt(loc.pos.eci.utc);
+    rvector ctpos;
+    double radius;
+    rvector da;
+    if (tt <= 0.)
+    {
+        return ctpos;
+    }
+    loc.pos.extra.tt = tt;
+    int32_t jpl = jplpos(JPL_SUN_BARY, JPL_EARTH, loc.pos.extra.tt, &loc.pos.extra.sun2earth);
+    // std::cout << jpl;
+    ctpos = rv_sub(rv_smult(-1., loc.pos.extra.sun2earth.s), loc.pos.eci.s);
+    if (jpl < 0.)
+    {
+        ctpos.col[0] = jpl;
+        return ctpos;
+    }
+    // radius = length_rv(ctpos);
+    // da = rv_smult(GSUN / (radius * radius * radius), ctpos);
+    return ctpos;
 }
 
 // return ECI posstruc cartpos TODO remove this
@@ -74,6 +110,54 @@ geoidpos ecitogeod(locstruc loc)
     return loc.pos.geod;
 }
 
+double loc2kepbeta(locstruc loc)
+{
+    kepstruc kep;
+    int32_t iretn = eci2kep(loc.pos.eci, kep);
+    if (iretn < 0)
+    {
+        kep.beta = iretn;
+    }
+    return kep.beta;
+}
+
+double loc2mtrtorq(locstruc loc, mtrstruc mtr)
+{
+    // Propagate current ECI position to obtain current GEOC position for bearth calculation
+    loc.pos.eci.pass++;
+    int32_t iretn = pos_eci(loc);
+    if (iretn < 0)
+    {
+        loc.pos.geod.utc = iretn;
+    }
+    // Rotate magnetic moment from sensor frame to body frame
+    rvector moment = irotate(mtr.align, rv_smult(mtr.mom, rv_unitz()));
+    // Get magnetic field in body frame
+    rvector bearth = irotate(loc.att.geoc.s, loc.pos.bearth);
+    // Compute final torque in body frame
+    rvector torque = rv_cross(moment, bearth);
+    double torque_magnitude = length_rv(torque);
+    return torque_magnitude;
+}
+
+double loc2rwtorq(locstruc loc, rwstruc rw)
+{
+    // Propagate current ECI position to obtain current GEOC position for bearth calculation
+    loc.pos.eci.pass++;
+    int32_t iretn = pos_eci(loc);
+    if (iretn < 0)
+    {
+        loc.pos.geod.utc = iretn;
+    }
+    // Moments of Reaction Wheel in Device frame
+    rmatrix mom = rm_diag(rw.mom);
+    // Torque in Body Frame
+    rvector torque = rv_mmult(mom, rv_smult(rw.mxalp, rv_unitz()));
+    torque = irotate(rw.align, torque);
+    double torque_magnitude = length_rv(torque);
+    return torque_magnitude;
+}
+
 string check_get_cos(bool create_flag)
 {
     string getr = get_cosmosresources(create_flag);
@@ -99,10 +183,15 @@ EMSCRIPTEN_BINDINGS(my_module)
         .field("z", &cvector::z);
     function("check_get_cos", &check_get_cos);
     function("loc2lvlh", &loc2lvlh);
+    function("loc2geoc", &loc2geoc);
     function("loc2eci", &loc2eci);
     function("loc2geos", &loc2geos);
+    function("loc2sunv", &loc2sunv);
     function("eci2geod", &eci2geod);
     function("ecitogeod", &ecitogeod);
+    function("loc2kepbeta", &loc2kepbeta);
+    function("loc2mtrtorq", &loc2mtrtorq);
+    function("loc2rwtorq", &loc2rwtorq);
     function("groundstation", &groundstation);
     value_object<locstruc>("locstruc")
         .field("utc", &locstruc::utc)
@@ -205,4 +294,30 @@ EMSCRIPTEN_BINDINGS(my_module)
         .field("utc", &extraatt::utc)
         .field("j2b", &extraatt::j2b)
         .field("b2j", &extraatt::b2j);
+    value_object<mtrstruc>("mtrstruc")
+        .field("align", &mtrstruc::align)
+        .field("npoly", &mtrstruc::npoly)
+        .field("ppoly", &mtrstruc::ppoly)
+        .field("mxmom", &mtrstruc::mxmom)
+        .field("tc", &mtrstruc::tc)
+        .field("rmom", &mtrstruc::rmom)
+        .field("mom", &mtrstruc::mom);
+    value_array<std::array<float, 7> >("array_float_7")
+        .element(emscripten::index<0>())
+        .element(emscripten::index<1>())
+        .element(emscripten::index<2>())
+        .element(emscripten::index<3>())
+        .element(emscripten::index<4>())
+        .element(emscripten::index<5>())
+        .element(emscripten::index<6>());
+    value_object<rwstruc>("rwstruc")
+        .field("align", &rwstruc::align)
+        .field("mom", &rwstruc::mom)
+        .field("mxomg", &rwstruc::mxomg)
+        .field("mxalp", &rwstruc::mxalp)
+        .field("tc", &rwstruc::tc)
+        .field("omg", &rwstruc::omg)
+        .field("alp", &rwstruc::alp)
+        .field("romg", &rwstruc::romg)
+        .field("ralp", &rwstruc::ralp);
 }
