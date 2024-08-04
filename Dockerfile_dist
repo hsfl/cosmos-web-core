@@ -1,0 +1,6 @@
+# Tag: hsfl2/web_core_dist:latest
+# Tag: hsfl2/web_core_dist:0.2.0
+
+FROM alpine as base
+WORKDIR /build/dist
+COPY ./CosmosWebCore.* ./
